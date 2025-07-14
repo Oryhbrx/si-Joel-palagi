@@ -98,27 +98,23 @@
     const anglePerSlice = 2 * Math.PI / total;
     const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
     let images = [];
+    let rotationCount = 0;
 
     function preloadImages(callback) {
       let loaded = 0;
       for (let i = 0; i < total; i++) {
-        if (names[i].type === 'image') {
-          const img = new Image();
-          img.crossOrigin = "anonymous";
-          img.src = names[i].id;
-          img.onload = () => {
-            images[i] = img;
-            loaded++;
-            if (loaded === total) callback();
-          };
-          img.onerror = () => {
-            loaded++;
-            if (loaded === total) callback();
-          };
-        } else {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = names[i].id;
+        img.onload = () => {
+          images[i] = img;
           loaded++;
           if (loaded === total) callback();
-        }
+        };
+        img.onerror = () => {
+          loaded++;
+          if (loaded === total) callback();
+        };
       }
     }
 
@@ -129,14 +125,14 @@
         const end = start + anglePerSlice;
         const mid = start + anglePerSlice / 2;
 
-        // Slice background
+        // Background slice
         ctx.beginPath();
         ctx.moveTo(200, 200);
         ctx.fillStyle = colors[i % colors.length];
         ctx.arc(200, 200, 200, start, end);
         ctx.fill();
 
-        // Draw image
+        // Image
         if (images[i]) {
           const imgX = 200 + Math.cos(mid) * 120;
           const imgY = 200 + Math.sin(mid) * 120;
@@ -147,7 +143,7 @@
           ctx.restore();
         }
 
-        // Draw name
+        // Name
         ctx.save();
         ctx.translate(200, 200);
         ctx.rotate(mid);
@@ -164,18 +160,24 @@
 
       const joelIndex = names.findIndex(n => n.name.toLowerCase() === "joel");
       const sliceDeg = 360 / total;
-      const offset = sliceDeg / 2;
-      const targetAngle = 360 - (joelIndex * sliceDeg) - offset;
-
+      const targetDeg = 360 - (joelIndex * sliceDeg + sliceDeg / 2); // Joel slice center to top
       const fullSpins = 5 * 360;
-      const finalRotation = fullSpins + targetAngle;
 
-      canvas.style.transition = "transform 5s cubic-bezier(0.33, 1, 0.68, 1)";
-      canvas.style.transform = `rotate(${finalRotation}deg)`;
+      const totalRotation = fullSpins + targetDeg;
+
+      // Reset transform before spinning again
+      canvas.style.transition = "none";
+      canvas.style.transform = `rotate(0deg)`;
+
+      // Small timeout to re-apply transform smoothly
+      setTimeout(() => {
+        canvas.style.transition = "transform 5s cubic-bezier(0.33, 1, 0.68, 1)";
+        canvas.style.transform = `rotate(${totalRotation}deg)`;
+      }, 50);
 
       setTimeout(() => {
         resultDiv.textContent = "😆 Palaging si Joel ang mali!";
-      }, 5200);
+      }, 5300);
     }
 
     preloadImages(drawWheel);
