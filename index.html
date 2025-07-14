@@ -136,7 +136,7 @@
         ctx.arc(200, 200, 200, start, end);
         ctx.fill();
 
-        // Draw image if exists
+        // Draw image
         if (images[i]) {
           const imgX = 200 + Math.cos(mid) * 120;
           const imgY = 200 + Math.sin(mid) * 120;
@@ -164,12 +164,14 @@
 
       const joelIndex = names.findIndex(n => n.name.toLowerCase() === "joel");
       const sliceDeg = 360 / total;
-      const targetDeg = 360 - (joelIndex * sliceDeg) - (sliceDeg / 2);
-      const extraSpins = 5 * 360;
-      const totalRotation = extraSpins + targetDeg;
+      const offset = sliceDeg / 2;
+      const targetAngle = 360 - (joelIndex * sliceDeg) - offset;
+
+      const fullSpins = 5 * 360;
+      const finalRotation = fullSpins + targetAngle;
 
       canvas.style.transition = "transform 5s cubic-bezier(0.33, 1, 0.68, 1)";
-      canvas.style.transform = `rotate(${totalRotation}deg)`;
+      canvas.style.transform = `rotate(${finalRotation}deg)`;
 
       setTimeout(() => {
         resultDiv.textContent = "😆 Palaging si Joel ang mali!";
