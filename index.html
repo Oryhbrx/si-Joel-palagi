@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SINO ANG MANLILIBRE?</title>
+  <title>SINO ANG PALAGING MALI SA TEAM BAHAY?</title>
   <style>
     body {
       margin: 0;
@@ -76,17 +76,17 @@
 <div id="result"></div>
 
 <script>
-const names = [
-  { name: "Joel",       img: "https://drive.google.com/uc?export=view&id=1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
-  { name: "Alexandree", img: "https://drive.google.com/uc?export=view&id=1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco" },
-  { name: "Jeilord",    img: "https://drive.google.com/uc?export=view&id=1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv" },
-  { name: "Jammir",     img: "https://drive.google.com/uc?export=view&id=102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq" },
-  { name: "Angelo",     img: "https://drive.google.com/uc?export=view&id=1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x" },
-  { name: "Ace",        img: "https://drive.google.com/uc?export=view&id=1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc" },
-  { name: "Roi",        img: "https://drive.google.com/uc?export=view&id=1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
-  { name: "Alexis",     img: "https://drive.google.com/uc?export=view&id=1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
-  { name: "Jhundle",    img: "https://drive.google.com/uc?export=view&id=1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh" }
-];
+  const names = [
+    { name: "Alexandree", img: "https://drive.google.com/uc?export=view&id=1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco" },
+    { name: "Jeilord",    img: "https://drive.google.com/uc?export=view&id=1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv" },
+    { name: "Jammir",     img: "https://drive.google.com/uc?export=view&id=102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq" },
+    { name: "Angelo",     img: "https://drive.google.com/uc?export=view&id=1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x" },
+    { name: "Ace",        img: "https://drive.google.com/uc?export=view&id=1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc" },
+    { name: "Roi",        img: "https://drive.google.com/uc?export=view&id=1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
+    { name: "Alexis",     img: "https://drive.google.com/uc?export=view&id=1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
+    { name: "Joel",       img: "https://drive.google.com/uc?export=view&id=1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
+    { name: "Jhundle",    img: "https://drive.google.com/uc?export=view&id=1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh" }
+  ];
 
   const canvas = document.getElementById("wheel");
   const ctx = canvas.getContext("2d");
@@ -152,24 +152,28 @@ const names = [
     }
   }
 
-function spin() {
-  resultEl.textContent = "";
+  function spin() {
+    resultEl.textContent = "";
 
-  const fullSpins = 5 * 362;
-const finalRotation = fullSpins; // No angle offset needed
+    const joelIndex = names.findIndex(n => n.name.toLowerCase() === "joel");
+    const sliceDeg = 360 / total;
+    const targetDeg = 360 - (joelIndex * sliceDeg + sliceDeg / 2);
+    const fullSpins = 5 * 360;
+    const finalRotation = fullSpins + targetDeg;
 
-  canvas.style.transition = "none";
-  canvas.style.transform = "rotate(0deg)";
+    canvas.style.transition = "none";
+    canvas.style.transform = "rotate(0deg)";
+    
+    setTimeout(() => {
+      canvas.style.transition = "transform 5s ease-out";
+      canvas.style.transform = `rotate(${finalRotation}deg)`;
+    }, 50);
 
-  setTimeout(() => {
-    canvas.style.transition = "transform 5s ease-out";
-    canvas.style.transform = `rotate(${finalRotation}deg)`;
-  }, 50);
+    setTimeout(() => {
+      resultEl.textContent = "😂 Palaging si Joel ang mali!";
+    }, 5300);
+  }
 
-  setTimeout(() => {
-    resultEl.textContent = "😂 Palaging si Joel ang mali!";
-  }, 5300);
-}
   preloadImages(drawWheel);
 </script>
 </body>
