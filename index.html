@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Team Bahay Spinner</title>
+  <title>Customizable Team Bahay Spinner</title>
   <style>
     body {
       margin: 0;
@@ -11,30 +10,33 @@
       font-family: sans-serif;
       color: #fff;
       text-align: center;
-      overflow-x: hidden;
     }
-
     h1 {
-      color: #ff4d4d;
       margin-top: 1em;
       font-size: 1.5em;
-      cursor: text;
+      color: #ff4d4d;
     }
-
-    h1:focus {
-      outline: none;
-      border-bottom: 2px dashed #ff4d4d;
+    #controls {
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-
+    input, button, textarea {
+      margin: 6px;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: none;
+    }
     #wheel-container {
       position: relative;
-      margin: 30px auto;
+      margin: 20px auto;
       width: 90vmin;
       height: 90vmin;
       max-width: 500px;
       max-height: 500px;
     }
-
     canvas {
       width: 100%;
       height: 100%;
@@ -42,7 +44,6 @@
       border: 8px solid white;
       transition: transform 5s ease-out;
     }
-
     #pointer {
       position: absolute;
       top: -25px;
@@ -54,202 +55,68 @@
       border-right: 20px solid transparent;
       border-bottom: 30px solid red;
     }
-
-    button {
-      padding: 12px 24px;
-      font-size: 1.2em;
-      background: #00f0ff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    #resultPopup {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 999;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      color: gold;
-      font-size: 2em;
-      font-weight: bold;
-      text-align: center;
-      animation: fadeIn 1s ease;
-    }
-
-    #resultPopup.show {
-      display: flex;
-    }
-
-    .sparkles {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      background: radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px);
-      background-size: 40px 40px;
-      animation: sparkle 2s infinite linear;
-    }
-
-    @keyframes sparkle {
-      0% { background-position: 0 0; }
-      100% { background-position: 40px 40px; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    .popup-text {
-      background: linear-gradient(45deg, gold, #fff, gold);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-size: 2.5em;
-      margin-bottom: 20px;
-    }
   </style>
 </head>
-<body>
-
-<h1 id="editableTitle" contenteditable="true" spellcheck="false">SINO ANG PALAGING MALI SA TEAM BAHAY?</h1>
-
-<div id="wheel-container">
+<body><h1 contenteditable="true">SINO ANG MANLILIBRE SA TEAM BAHAY?</h1><div id="controls">
+  <textarea id="nameList" rows="6" cols="30" placeholder="Enter names here (one per line)"></textarea>
+  <button onclick="updateWheel()">Update Wheel</button>
+  <button onclick="spin()">SPIN</button>
+</div><div id="wheel-container">
   <div id="pointer"></div>
   <canvas id="wheel" width="500" height="500"></canvas>
-</div>
-
-<button onclick="spin()">SPIN</button>
-
-<!-- POPUP OVERLAY -->
-<div id="resultPopup">
-  <div class="sparkles"></div>
-  <div class="popup-text"> Si Joel </div>
-  <button onclick="closePopup()">Spin Again</button>
-</div>
-
-<script>
-  const names = [
-    { name: "Alexandree", img: "https://drive.google.com/uc?export=view&id=1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco" },
-    { name: "Jeilord",    img: "https://drive.google.com/uc?export=view&id=1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv" },
-    { name: "Jammir",     img: "https://drive.google.com/uc?export=view&id=102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq" },
-    { name: "Angelo",     img: "https://drive.google.com/uc?export=view&id=1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x" },
-    { name: "Ace",        img: "https://drive.google.com/uc?export=view&id=1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc" },
-    { name: "Roi",        img: "https://drive.google.com/uc?export=view&id=1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
-    { name: "Alexis",     img: "https://drive.google.com/uc?export=view&id=1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
-    { name: "Joel",       img: "https://drive.google.com/uc?export=view&id=1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
-    { name: "Jhundle",    img: "https://drive.google.com/uc?export=view&id=1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh" }
-  ];
-
-  const canvas = document.getElementById("wheel");
-  const ctx = canvas.getContext("2d");
-  const total = names.length;
-  const center = canvas.width / 2;
-  const anglePerSlice = 2 * Math.PI / total;
-  const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
-  let images = [];
-
-  const titleEl = document.getElementById("editableTitle");
-
-  // Load saved title
-  if (localStorage.getItem("wheelTitle")) {
-    titleEl.innerText = localStorage.getItem("wheelTitle");
-  }
-
-  // Save title on change
-  titleEl.addEventListener("input", () => {
-    localStorage.setItem("wheelTitle", titleEl.innerText.trim());
-  });
-
-  function preloadImages(callback) {
-    let loaded = 0;
-    for (let i = 0; i < total; i++) {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = names[i].img;
-      img.onload = () => {
-        images[i] = img;
-        loaded++;
-        if (loaded === total) callback();
-      };
-      img.onerror = () => {
-        loaded++;
-        if (loaded === total) callback();
-      };
-    }
-  }
+</div><script>
+  let canvas = document.getElementById("wheel");
+  let ctx = canvas.getContext("2d");
+  let center = canvas.width / 2;
+  let names = ["Joel", "Alexis", "Jeilord", "Angelo"];
+  let anglePerSlice;
 
   function drawWheel() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < total; i++) {
-      const start = i * anglePerSlice;
-      const end = start + anglePerSlice;
-      const mid = start + anglePerSlice / 2;
+    let total = names.length;
+    anglePerSlice = 2 * Math.PI / total;
+    let colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
 
-      // Slice background
+    for (let i = 0; i < total; i++) {
+      let start = i * anglePerSlice;
+      let end = start + anglePerSlice;
+      let mid = start + anglePerSlice / 2;
+
       ctx.beginPath();
       ctx.moveTo(center, center);
       ctx.fillStyle = colors[i % colors.length];
       ctx.arc(center, center, center, start, end);
       ctx.fill();
 
-      // Draw image
-      if (images[i]) {
-        const imgX = center + Math.cos(mid) * center * 0.6;
-        const imgY = center + Math.sin(mid) * center * 0.6;
-        ctx.save();
-        ctx.translate(imgX, imgY);
-        ctx.rotate(mid + Math.PI / 2);
-        ctx.drawImage(images[i], -25, -25, 50, 50);
-        ctx.restore();
-      }
-
-      // Draw name
       ctx.save();
       ctx.translate(center, center);
       ctx.rotate(mid);
       ctx.textAlign = "center";
       ctx.fillStyle = "#000";
       ctx.font = "bold 14px sans-serif";
-      ctx.fillText(names[i].name, center * 0.65, 5);
+      ctx.fillText(names[i], center * 0.65, 5);
       ctx.restore();
     }
   }
 
   function spin() {
-    const degreesPerSlice = 360 / names.length;
-    const joelIndex = names.findIndex(n => n.name === "Joel");
-    const centerOffset = (joelIndex + 0.5) * degreesPerSlice - 1.5;
-    const finalRotation = (5 * 360) + (360 - centerOffset);
-
+    let randAngle = Math.floor(Math.random() * 360) + 1800;
     canvas.style.transition = "none";
     canvas.style.transform = "rotate(0deg)";
     setTimeout(() => {
       canvas.style.transition = "transform 5s ease-out";
-      canvas.style.transform = `rotate(${finalRotation}deg)`;
+      canvas.style.transform = `rotate(${randAngle}deg)`;
     }, 50);
-
-    setTimeout(() => {
-      showPopup();
-    }, 5300);
   }
 
-  function showPopup() {
-    document.getElementById("resultPopup").classList.add("show");
+  function updateWheel() {
+    const input = document.getElementById("nameList").value.trim();
+    if (input) {
+      names = input.split("\n").map(n => n.trim()).filter(n => n !== "");
+      drawWheel();
+    }
   }
 
-  function closePopup() {
-    document.getElementById("resultPopup").classList.remove("show");
-  }
-
-  preloadImages(drawWheel);
-</script>
-
-</body>
+  drawWheel();
+</script></body>
 </html>
