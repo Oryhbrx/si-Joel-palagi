@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SINO ANG MANLILIBRE SA TEAM BAHAY?</title>
+  <title>Team Bahay Spinner</title>
   <style>
     body {
       margin: 0;
@@ -18,6 +18,12 @@
       color: #ff4d4d;
       margin-top: 1em;
       font-size: 1.5em;
+      cursor: text;
+    }
+
+    h1:focus {
+      outline: none;
+      border-bottom: 2px dashed #ff4d4d;
     }
 
     #wheel-container {
@@ -112,7 +118,7 @@
 </head>
 <body>
 
-<h1>SINO ANG PALAGING MALI SA TEAM BAHAY?</h1>
+<h1 id="editableTitle" contenteditable="true" spellcheck="false">SINO ANG PALAGING MALI SA TEAM BAHAY?</h1>
 
 <div id="wheel-container">
   <div id="pointer"></div>
@@ -124,8 +130,8 @@
 <!-- POPUP OVERLAY -->
 <div id="resultPopup">
   <div class="sparkles"></div>
-  <div class="popup-text"> Si Joel!</div>
-  <button onclick="closePopup()">Okay 😂</button>
+  <div class="popup-text"> Si Joel </div>
+  <button onclick="closePopup()">Spin Again</button>
 </div>
 
 <script>
@@ -148,6 +154,18 @@
   const anglePerSlice = 2 * Math.PI / total;
   const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
   let images = [];
+
+  const titleEl = document.getElementById("editableTitle");
+
+  // Load saved title
+  if (localStorage.getItem("wheelTitle")) {
+    titleEl.innerText = localStorage.getItem("wheelTitle");
+  }
+
+  // Save title on change
+  titleEl.addEventListener("input", () => {
+    localStorage.setItem("wheelTitle", titleEl.innerText.trim());
+  });
 
   function preloadImages(callback) {
     let loaded = 0;
