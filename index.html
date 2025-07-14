@@ -2,33 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SINO ANG PALAGING MALI SA TEAM BAHAY?</title>
   <style>
-    body {
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
       background: #111;
       color: #fff;
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 40px;
+      height: 100%;
+      overflow-x: hidden;
     }
 
     h1 {
       color: #ff4d4d;
       text-transform: uppercase;
+      font-size: 1.5em;
+      margin-top: 1em;
     }
 
     #wheel-container {
       position: relative;
-      margin: 50px auto;
-      width: 400px;
-      height: 400px;
+      margin: 0 auto;
+      width: 90vmin;
+      height: 90vmin;
+      max-width: 500px;
+      max-height: 500px;
     }
 
     #wheel {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      border: 10px solid #fff;
+      border: 8px solid #fff;
       box-shadow: 0 0 20px #000;
       transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
     }
@@ -40,29 +52,45 @@
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 30px solid red;
-    }
-
-    #result {
-      font-size: 2em;
-      margin-top: 30px;
-      color: #00ff88;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 25px solid red;
     }
 
     button {
       font-size: 1.2em;
-      padding: 10px 20px;
+      padding: 12px 24px;
       background: #00f0ff;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      margin-top: 30px;
+      margin: 20px auto;
     }
 
     button:hover {
-      background: #009eb2;
+      background: #00c3d6;
+    }
+
+    #result {
+      font-size: 1.5em;
+      color: #00ff88;
+      margin: 10px auto;
+    }
+
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 1.2em;
+        padding: 0 10px;
+      }
+
+      button {
+        font-size: 1em;
+        padding: 10px 20px;
+      }
+
+      #result {
+        font-size: 1.2em;
+      }
     }
   </style>
 </head>
@@ -72,7 +100,7 @@
 
   <div id="wheel-container">
     <div id="pointer"></div>
-    <canvas id="wheel" width="400" height="400"></canvas>
+    <canvas id="wheel" width="500" height="500"></canvas>
   </div>
 
   <button onclick="spin()">SPIN</button>
@@ -80,15 +108,15 @@
 
   <script>
     const names = [
-      { name: "Alexandree", type: 'image', id: "1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco" },
-      { name: "Jeilord",     type: 'image', id: "1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv" },
-      { name: "Jammir",      type: 'image', id: "102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq" },
-      { name: "Angelo",      type: 'image', id: "1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x" },
-      { name: "Ace",         type: 'image', id: "1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc" },
-      { name: "Roi",         type: 'image', id: "1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
-      { name: "Alexis",      type: 'image', id: "1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
-      { name: "Joel",        type: 'image', id: "1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
-      { name: "Jhundle",     type: 'image', id: "1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh" }
+      { name: "Alexandree", type: 'image', id: "https://drive.google.com/uc?export=view&id=1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco" },
+      { name: "Jeilord",     type: 'image', id: "https://drive.google.com/uc?export=view&id=1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv" },
+      { name: "Jammir",      type: 'image', id: "https://drive.google.com/uc?export=view&id=102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq" },
+      { name: "Angelo",      type: 'image', id: "https://drive.google.com/uc?export=view&id=1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x" },
+      { name: "Ace",         type: 'image', id: "https://drive.google.com/uc?export=view&id=1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc" },
+      { name: "Roi",         type: 'image', id: "https://drive.google.com/uc?export=view&id=1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
+      { name: "Alexis",      type: 'image', id: "https://drive.google.com/uc?export=view&id=1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
+      { name: "Joel",        type: 'image', id: "https://drive.google.com/uc?export=view&id=1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
+      { name: "Jhundle",     type: 'image', id: "https://drive.google.com/uc?export=view&id=1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh" }
     ];
 
     const canvas = document.getElementById("wheel");
@@ -98,7 +126,6 @@
     const anglePerSlice = 2 * Math.PI / total;
     const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
     let images = [];
-    let rotationCount = 0;
 
     function preloadImages(callback) {
       let loaded = 0;
@@ -119,60 +146,58 @@
     }
 
     function drawWheel() {
-      ctx.clearRect(0, 0, 400, 400);
+      const w = canvas.width;
+      const h = canvas.height;
+      const center = w / 2;
+      const radius = center;
+      ctx.clearRect(0, 0, w, h);
       for (let i = 0; i < total; i++) {
         const start = i * anglePerSlice;
         const end = start + anglePerSlice;
         const mid = start + anglePerSlice / 2;
 
-        // Background slice
         ctx.beginPath();
-        ctx.moveTo(200, 200);
+        ctx.moveTo(center, center);
         ctx.fillStyle = colors[i % colors.length];
-        ctx.arc(200, 200, 200, start, end);
+        ctx.arc(center, center, radius, start, end);
         ctx.fill();
 
-        // Image
         if (images[i]) {
-          const imgX = 200 + Math.cos(mid) * 120;
-          const imgY = 200 + Math.sin(mid) * 120;
+          const imgX = center + Math.cos(mid) * radius * 0.6;
+          const imgY = center + Math.sin(mid) * radius * 0.6;
           ctx.save();
           ctx.translate(imgX, imgY);
           ctx.rotate(mid + Math.PI / 2);
-          ctx.drawImage(images[i], -25, -25, 50, 50);
+          ctx.drawImage(images[i], -radius * 0.08, -radius * 0.08, radius * 0.16, radius * 0.16);
           ctx.restore();
         }
 
-        // Name
         ctx.save();
-        ctx.translate(200, 200);
+        ctx.translate(center, center);
         ctx.rotate(mid);
         ctx.textAlign = "center";
         ctx.fillStyle = "#000";
-        ctx.font = "bold 14px Arial";
-        ctx.fillText(names[i].name, 120, 5);
+        ctx.font = `${radius * 0.07}px Arial`;
+        ctx.fillText(names[i].name, radius * 0.6, 5);
         ctx.restore();
       }
     }
 
     function spin() {
       resultDiv.textContent = "";
-
       const joelIndex = names.findIndex(n => n.name.toLowerCase() === "joel");
       const sliceDeg = 360 / total;
-      const targetDeg = 360 - (joelIndex * sliceDeg + sliceDeg / 2); // Joel slice center to top
+      const offset = sliceDeg / 2;
+      const targetAngle = 360 - (joelIndex * sliceDeg + offset);
       const fullSpins = 5 * 360;
+      const finalRotation = fullSpins + targetAngle;
 
-      const totalRotation = fullSpins + targetDeg;
-
-      // Reset transform before spinning again
       canvas.style.transition = "none";
       canvas.style.transform = `rotate(0deg)`;
 
-      // Small timeout to re-apply transform smoothly
       setTimeout(() => {
         canvas.style.transition = "transform 5s cubic-bezier(0.33, 1, 0.68, 1)";
-        canvas.style.transform = `rotate(${totalRotation}deg)`;
+        canvas.style.transform = `rotate(${finalRotation}deg)`;
       }, 50);
 
       setTimeout(() => {
