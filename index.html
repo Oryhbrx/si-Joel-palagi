@@ -80,14 +80,15 @@
 
   <script>
 const names = [
-  { name: "Alexis",     img: "https://drive.google.com/uc?export=view&id=1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
-  { name: "Roi",        img: "https://drive.google.com/uc?export=view&id=1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
+const names = [
+  { name: "Joel",       img: "https://drive.google.com/uc?export=view&id=1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
   { name: "Alexandree", img: "https://drive.google.com/uc?export=view&id=1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco" },
   { name: "Jeilord",    img: "https://drive.google.com/uc?export=view&id=1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv" },
   { name: "Jammir",     img: "https://drive.google.com/uc?export=view&id=102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq" },
   { name: "Angelo",     img: "https://drive.google.com/uc?export=view&id=1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x" },
-  { name: "Joel",       img: "https://drive.google.com/uc?export=view&id=1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
   { name: "Ace",        img: "https://drive.google.com/uc?export=view&id=1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc" },
+  { name: "Roi",        img: "https://drive.google.com/uc?export=view&id=1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
+  { name: "Alexis",     img: "https://drive.google.com/uc?export=view&id=1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
   { name: "Jhundle",    img: "https://drive.google.com/uc?export=view&id=1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh" }
 ];
 
@@ -154,30 +155,26 @@ const names = [
       }
     }
 
-    function spin() {
-      const resultEl = document.getElementById("result");
-      resultEl.textContent = "";
+function spin() {
+  resultEl.textContent = "";
 
-      const joelIndex = names.findIndex(n => n.name.toLowerCase() === "joel");
-      const sliceDeg = 360 / total;
-      const offsetDeg = sliceDeg / 2;
-      const targetDeg = 360 - (joelIndex * sliceDeg + offsetDeg);
+  // Joel is at index 0, which is the first slice starting at 0 degrees
+  // So just spin whole rounds (e.g., 5x360 degrees)
+  const fullSpins = 5 * 360;
+  const finalRotation = fullSpins;
 
-      const fullSpins = 5 * 360;
-      const finalRotation = fullSpins + targetDeg;
+  canvas.style.transition = "none";
+  canvas.style.transform = "rotate(0deg)";
 
-      canvas.style.transition = "none";
-      canvas.style.transform = "rotate(0deg)";
+  setTimeout(() => {
+    canvas.style.transition = "transform 5s ease-out";
+    canvas.style.transform = `rotate(${finalRotation}deg)`;
+  }, 50);
 
-      setTimeout(() => {
-        canvas.style.transition = "transform 5s ease-out";
-        canvas.style.transform = `rotate(${finalRotation}deg)`;
-      }, 50);
-
-      setTimeout(() => {
-        resultEl.textContent = "😂 Palaging si Joel ang mali!";
-      }, 5300);
-    }
+  setTimeout(() => {
+    resultEl.textContent = "😂 Palaging si Joel ang mali!";
+  }, 5300);
+}
 
     preloadImages(drawWheel);
   </script>
