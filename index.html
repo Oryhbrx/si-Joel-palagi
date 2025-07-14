@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SINO ANG PALAGING MALI SA TEAM BAHAY?</title>
   <style>
     body {
@@ -42,7 +42,7 @@
       height: 0;
       border-left: 20px solid transparent;
       border-right: 20px solid transparent;
-      border-bottom: 30px solid #f00;
+      border-bottom: 30px solid red;
     }
 
     #result {
@@ -80,65 +80,69 @@
 
   <script>
     const names = [
-      { name: "Alexandree", img: "https://drive.google.com/uc?export=view&id=1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco" },
-      { name: "Jeilord",     img: "https://drive.google.com/uc?export=view&id=1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv" },
-      { name: "Jammir",      img: "https://drive.google.com/uc?export=view&id=102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq" },
-      { name: "Angelo",      img: "https://drive.google.com/uc?export=view&id=1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x" },
-      { name: "Ace",         img: "https://drive.google.com/uc?export=view&id=1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc" },
-      { name: "Roi",         img: "https://drive.google.com/uc?export=view&id=1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
-      { name: "Alexis",      img: "https://drive.google.com/uc?export=view&id=1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
-      { name: "Joel",        img: "https://drive.google.com/uc?export=view&id=1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
-      { name: "Jhundle",     img: "https://drive.google.com/uc?export=view&id=1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh" }
+      { name: "Alexandree", type: 'image', id: "https://drive.google.com/uc?export=view&id=1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco" },
+      { name: "Jeilord",     type: 'image', id: "https://drive.google.com/uc?export=view&id=1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv" },
+      { name: "Jammir",      type: 'image', id: "https://drive.google.com/uc?export=view&id=102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq" },
+      { name: "Angelo",      type: 'image', id: "https://drive.google.com/uc?export=view&id=1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x" },
+      { name: "Ace",         type: 'image', id: "https://drive.google.com/uc?export=view&id=1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc" },
+      { name: "Roi",         type: 'image', id: "https://drive.google.com/uc?export=view&id=1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
+      { name: "Alexis",      type: 'image', id: "https://drive.google.com/uc?export=view&id=1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
+      { name: "Joel",        type: 'image', id: "https://drive.google.com/uc?export=view&id=1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
+      { name: "Jhundle",     type: 'image', id: "https://drive.google.com/uc?export=view&id=1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh" }
     ];
 
-    const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
     const resultDiv = document.getElementById("result");
-    const anglePerSlice = 2 * Math.PI / names.length;
-    const images = [];
+    const total = names.length;
+    const anglePerSlice = 2 * Math.PI / total;
+    const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
+    let images = [];
 
     function preloadImages(callback) {
       let loaded = 0;
-      names.forEach((person, index) => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = person.img;
-        img.onload = () => {
-          images[index] = img;
+      for (let i = 0; i < total; i++) {
+        if (names[i].type === 'image') {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = names[i].id;
+          img.onload = () => {
+            images[i] = img;
+            loaded++;
+            if (loaded === total) callback();
+          };
+          img.onerror = () => {
+            loaded++;
+            if (loaded === total) callback();
+          };
+        } else {
           loaded++;
-          if (loaded === names.length) callback();
-        };
-        img.onerror = () => {
-          console.error("Image failed to load for:", person.name);
-          loaded++;
-          if (loaded === names.length) callback();
-        };
-      });
+          if (loaded === total) callback();
+        }
+      }
     }
 
     function drawWheel() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < names.length; i++) {
-        const startAngle = i * anglePerSlice;
-        const endAngle = startAngle + anglePerSlice;
+      ctx.clearRect(0, 0, 400, 400);
+      for (let i = 0; i < total; i++) {
+        const start = i * anglePerSlice;
+        const end = start + anglePerSlice;
+        const mid = start + anglePerSlice / 2;
 
-        // Background slice
+        // Slice background
         ctx.beginPath();
-        ctx.fillStyle = colors[i % colors.length];
         ctx.moveTo(200, 200);
-        ctx.arc(200, 200, 200, startAngle, endAngle);
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.arc(200, 200, 200, start, end);
         ctx.fill();
 
-        const midAngle = startAngle + anglePerSlice / 2;
-        const imgX = 200 + Math.cos(midAngle) * 120;
-        const imgY = 200 + Math.sin(midAngle) * 120;
-
-        // Draw image if available
+        // Draw image if exists
         if (images[i]) {
+          const imgX = 200 + Math.cos(mid) * 120;
+          const imgY = 200 + Math.sin(mid) * 120;
           ctx.save();
           ctx.translate(imgX, imgY);
-          ctx.rotate(midAngle + Math.PI / 2);
+          ctx.rotate(mid + Math.PI / 2);
           ctx.drawImage(images[i], -25, -25, 50, 50);
           ctx.restore();
         }
@@ -146,11 +150,11 @@
         // Draw name
         ctx.save();
         ctx.translate(200, 200);
-        ctx.rotate(midAngle);
+        ctx.rotate(mid);
         ctx.textAlign = "center";
         ctx.fillStyle = "#000";
         ctx.font = "bold 14px Arial";
-        ctx.fillText(names[i].name, 110, 5);
+        ctx.fillText(names[i].name, 120, 5);
         ctx.restore();
       }
     }
@@ -158,14 +162,14 @@
     function spin() {
       resultDiv.textContent = "";
 
-      const joelIndex = names.findIndex(n => n.name === "Joel");
-      const sliceAngle = 360 / names.length;
-      const targetAngle = 360 - (joelIndex * sliceAngle) - (sliceAngle / 2);
-      const fullSpins = 5;
-      const finalAngle = fullSpins * 360 + targetAngle;
+      const joelIndex = names.findIndex(n => n.name.toLowerCase() === "joel");
+      const sliceDeg = 360 / total;
+      const targetDeg = 360 - (joelIndex * sliceDeg) - (sliceDeg / 2);
+      const extraSpins = 5 * 360;
+      const totalRotation = extraSpins + targetDeg;
 
       canvas.style.transition = "transform 5s cubic-bezier(0.33, 1, 0.68, 1)";
-      canvas.style.transform = `rotate(${finalAngle}deg)`;
+      canvas.style.transform = `rotate(${totalRotation}deg)`;
 
       setTimeout(() => {
         resultDiv.textContent = "😆 Palaging si Joel ang mali!";
