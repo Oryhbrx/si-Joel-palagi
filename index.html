@@ -28,7 +28,7 @@
 
     #wheel-container {
       position: relative;
-      margin: 30px auto;
+      margin: 20px auto;
       width: 90vmin;
       height: 90vmin;
       max-width: 500px;
@@ -55,27 +55,27 @@
       border-bottom: 30px solid red;
     }
 
-    button {
-      padding: 12px 24px;
-      font-size: 1.2em;
-      background: #00f0ff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
     textarea {
       width: 90%;
       max-width: 500px;
       height: 100px;
-      margin: 20px auto;
+      margin: 15px auto;
       display: block;
       padding: 10px;
       font-size: 1em;
       border-radius: 6px;
       border: none;
       resize: vertical;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 1.1em;
+      background: #00f0ff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px 5px;
     }
 
     #resultPopup {
@@ -93,11 +93,11 @@
       font-size: 2em;
       font-weight: bold;
       text-align: center;
-      animation: fadeIn 1s ease;
     }
 
     #resultPopup.show {
       display: flex;
+      animation: fadeIn 1s ease;
     }
 
     .sparkles {
@@ -105,7 +105,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      background: radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px);
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
       background-size: 40px 40px;
       animation: sparkle 2s infinite linear;
     }
@@ -152,7 +152,6 @@ Jhundle</textarea>
 
 <button onclick="spin()">SPIN</button>
 
-<!-- Popup -->
 <div id="resultPopup">
   <div class="sparkles"></div>
   <div class="popup-text" id="popupWinner">😂 Si Joel ang Palaging Mali!</div>
@@ -161,7 +160,6 @@ Jhundle</textarea>
 
 <script>
   let names = [];
-  let images = [];
   const canvas = document.getElementById("wheel");
   const ctx = canvas.getContext("2d");
   const center = canvas.width / 2;
@@ -170,7 +168,7 @@ Jhundle</textarea>
   const titleEl = document.getElementById("editableTitle");
   const nameList = document.getElementById("nameList");
 
-  // Load saved title
+  // Save/load title
   if (localStorage.getItem("wheelTitle")) {
     titleEl.innerText = localStorage.getItem("wheelTitle");
   }
@@ -180,8 +178,9 @@ Jhundle</textarea>
   });
 
   function updateWheel() {
-    const lines = nameList.value.trim().split("\\n").filter(Boolean);
-    names = lines.map(n => ({ name: n, img: null }));
+    const lines = nameList.value.trim().split("\n").filter(Boolean);
+    if (!lines.includes("Joel")) lines.push("Joel"); // always include Joel
+    names = lines;
     anglePerSlice = 2 * Math.PI / names.length;
     drawWheel();
   }
@@ -189,7 +188,6 @@ Jhundle</textarea>
   function drawWheel() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
-
     for (let i = 0; i < names.length; i++) {
       const start = i * anglePerSlice;
       const end = start + anglePerSlice;
@@ -207,33 +205,31 @@ Jhundle</textarea>
       ctx.textAlign = "center";
       ctx.fillStyle = "#000";
       ctx.font = "bold 14px sans-serif";
-      ctx.fillText(names[i].name, center * 0.65, 5);
+      ctx.fillText(names[i], center * 0.65, 5);
       ctx.restore();
     }
   }
 
   function spin() {
     const degreesPerSlice = 360 / names.length;
-    const joelIndex = names.findIndex(n => n.name.toLowerCase() === "joel");
-    let selectedIndex = joelIndex !== -1 ? joelIndex : Math.floor(Math.random() * names.length);
-
-    const centerOffset = (selectedIndex + 0.5) * degreesPerSlice;
-    const finalRotation = (5 * 360) + (360 - centerOffset);
+    const joelIndex = names.findIndex(n => n.trim().toLowerCase() === "joel");
+    const offset = (joelIndex + 0.5) * degreesPerSlice;
+    const finalDeg = (5 * 360) + (360 - offset);
 
     canvas.style.transition = "none";
     canvas.style.transform = "rotate(0deg)";
     setTimeout(() => {
       canvas.style.transition = "transform 5s ease-out";
-      canvas.style.transform = `rotate(${finalRotation}deg)`;
+      canvas.style.transform = `rotate(${finalDeg}deg)`;
     }, 50);
 
     setTimeout(() => {
-      showPopup(names[selectedIndex].name);
+      showPopup("Joel");
     }, 5300);
   }
 
-  function showPopup(winner) {
-    document.getElementById("popupWinner").textContent = `😂 Si ${winner} ang Palaging Mali!`;
+  function showPopup(name) {
+    document.getElementById("popupWinner").textContent = `😂 Si ${name} ang Palaging Mali!`;
     document.getElementById("resultPopup").classList.add("show");
   }
 
