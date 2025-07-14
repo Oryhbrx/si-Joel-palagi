@@ -159,7 +159,11 @@
 
     const degreesPerSlice = 360 / names.length;
     const joelIndex = names.findIndex(n => n.name === "Joel");
-    const centerOffset = (joelIndex + 0.5) * degreesPerSlice;
+
+    // Small nudge: subtract a few degrees for precision alignment
+    const offsetNudge = 1.5; // adjust if needed
+
+    const centerOffset = (joelIndex + 0.5) * degreesPerSlice - offsetNudge;
     const fullSpins = 5 * 360;
     const finalRotation = fullSpins + (360 - centerOffset);
 
