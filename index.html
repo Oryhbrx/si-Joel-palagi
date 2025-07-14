@@ -11,6 +11,7 @@
       font-family: sans-serif;
       color: #fff;
       text-align: center;
+      overflow-x: hidden;
     }
 
     h1 {
@@ -58,10 +59,54 @@
       margin-top: 20px;
     }
 
-    #result {
-      margin-top: 20px;
-      font-size: 1.5em;
-      color: #00ff88;
+    #resultPopup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: gold;
+      font-size: 2em;
+      font-weight: bold;
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    #resultPopup.show {
+      display: flex;
+    }
+
+    .sparkles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: sparkle 2s infinite linear;
+    }
+
+    @keyframes sparkle {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 40px; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .popup-text {
+      background: linear-gradient(45deg, gold, #fff, gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2.5em;
+      margin-bottom: 20px;
     }
   </style>
 </head>
@@ -75,7 +120,13 @@
 </div>
 
 <button onclick="spin()">SPIN</button>
-<div id="result"></div>
+
+<!-- POPUP OVERLAY -->
+<div id="resultPopup">
+  <div class="sparkles"></div>
+  <div class="popup-text">😂 Si Joel ang Palaging Mali!</div>
+  <button onclick="closePopup()">Okay 😂</button>
+</div>
 
 <script>
   const names = [
@@ -92,7 +143,6 @@
 
   const canvas = document.getElementById("wheel");
   const ctx = canvas.getContext("2d");
-  const resultEl = document.getElementById("result");
   const total = names.length;
   const center = canvas.width / 2;
   const anglePerSlice = 2 * Math.PI / total;
@@ -155,22 +205,29 @@
   }
 
   function spin() {
-  const sliceAngle = 360 / names.length;
-  const joelIndex = names.findIndex(n => n.name === "Joel");
-  const targetAngle = 360 - ((joelIndex + 0.5) * sliceAngle); // Center of Joel's slice
-  const spins = 5;
-  const finalAngle = (spins * 360) + targetAngle;
+    const degreesPerSlice = 360 / names.length;
+    const joelIndex = names.findIndex(n => n.name === "Joel");
+    const centerOffset = (joelIndex + 0.5) * degreesPerSlice - 1.5;
+    const finalRotation = (5 * 360) + (360 - centerOffset);
 
-  canvas.style.transition = "none";
-  canvas.style.transform = "rotate(0deg)";
-  setTimeout(() => {
-    canvas.style.transition = "transform 5s ease-out";
-    canvas.style.transform = `rotate(${finalAngle}deg)`;
-  }, 50);
+    canvas.style.transition = "none";
+    canvas.style.transform = "rotate(0deg)";
+    setTimeout(() => {
+      canvas.style.transition = "transform 5s ease-out";
+      canvas.style.transform = `rotate(${finalRotation}deg)`;
+    }, 50);
 
-  setTimeout(() => {
-    resultEl.textContent = "😂 Palaging si Joel ang mali!";
-  }, 5300);
+    setTimeout(() => {
+      showPopup();
+    }, 5300);
+  }
+
+  function showPopup() {
+    document.getElementById("resultPopup").classList.add("show");
+  }
+
+  function closePopup() {
+    document.getElementById("resultPopup").classList.remove("show");
   }
 
   preloadImages(drawWheel);
