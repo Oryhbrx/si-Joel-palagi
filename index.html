@@ -62,6 +62,19 @@ button {
   margin-top: 20px;
 }
 
+textarea {
+  width: 90%;
+  max-width: 500px;
+  height: 100px;
+  margin: 20px auto;
+  display: block;
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 6px;
+  border: none;
+  resize: vertical;
+}
+
 #resultPopup {
   display: none;
   position: fixed;
@@ -114,67 +127,66 @@ button {
 
   </style>
 </head>
-<body><h1 id="editableTitle" contenteditable="true" spellcheck="false">SINO ANG PALAGING MALI SA TEAM BAHAY?</h1><div id="wheel-container">
+<body><h1 id="editableTitle" contenteditable="true" spellcheck="false">SINO ANG PALAGING MALI SA TEAM BAHAY?</h1><textarea id="nameList">Alexandree
+Jeilord
+Jammir
+Angelo
+Ace
+Roi
+Alexis
+Joel
+Jhundle</textarea><button onclick="updateWheel()">Update Wheel</button>
+
+<div id="wheel-container">
   <div id="pointer"></div>
   <canvas id="wheel" width="500" height="500"></canvas>
 </div><button onclick="spin()">SPIN</button>
 
-<!-- POPUP OVERLAY --><div id="resultPopup">
+<div id="resultPopup">
   <div class="sparkles"></div>
-  <div class="popup-text">😂 Si Joel ang Palaging Mali!</div>
+  <div class="popup-text" id="popupWinner"></div>
   <button onclick="closePopup()">Okay 😂</button>
 </div><script>
-  const names = [
-    { name: "Alexandree", img: "https://drive.google.com/uc?export=view&id=1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco" },
-    { name: "Jeilord",    img: "https://drive.google.com/uc?export=view&id=1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv" },
-    { name: "Jammir",     img: "https://drive.google.com/uc?export=view&id=102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq" },
-    { name: "Angelo",     img: "https://drive.google.com/uc?export=view&id=1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x" },
-    { name: "Ace",        img: "https://drive.google.com/uc?export=view&id=1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc" },
-    { name: "Roi",        img: "https://drive.google.com/uc?export=view&id=1LhckhWY3xFSrIS014F81Zgui2JBQvBBS" },
-    { name: "Alexis",     img: "https://drive.google.com/uc?export=view&id=1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9" },
-    { name: "Joel",       img: "https://drive.google.com/uc?export=view&id=1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j" },
-    { name: "Jhundle",    img: "https://drive.google.com/uc?export=view&id=1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh" }
-  ];
-
+  let names = [];
+  let images = [];
   const canvas = document.getElementById("wheel");
   const ctx = canvas.getContext("2d");
-  const total = names.length;
   const center = canvas.width / 2;
-  const anglePerSlice = 2 * Math.PI / total;
-  const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
-  let images = [];
+  let anglePerSlice = 0;
 
   const titleEl = document.getElementById("editableTitle");
+  const nameList = document.getElementById("nameList");
 
   if (localStorage.getItem("wheelTitle")) {
     titleEl.innerText = localStorage.getItem("wheelTitle");
   }
-
   titleEl.addEventListener("input", () => {
     localStorage.setItem("wheelTitle", titleEl.innerText.trim());
   });
 
+  function updateWheel() {
+    const lines = nameList.value.trim().split("\n").filter(Boolean);
+    names = lines.map(n => ({ name: n, img: null }));
+    anglePerSlice = 2 * Math.PI / names.length;
+    preloadImages(drawWheel);
+  }
+
   function preloadImages(callback) {
+    images = [];
     let loaded = 0;
-    for (let i = 0; i < total; i++) {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = names[i].img;
-      img.onload = () => {
-        images[i] = img;
-        loaded++;
-        if (loaded === total) callback();
-      };
-      img.onerror = () => {
-        loaded++;
-        if (loaded === total) callback();
-      };
+    if (names.length === 0) return;
+    for (let i = 0; i < names.length; i++) {
+      images[i] = null;
+      loaded++;
+      if (loaded === names.length) callback();
     }
   }
 
   function drawWheel() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < total; i++) {
+    const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
+
+    for (let i = 0; i < names.length; i++) {
       const start = i * anglePerSlice;
       const end = start + anglePerSlice;
       const mid = start + anglePerSlice / 2;
@@ -184,16 +196,6 @@ button {
       ctx.fillStyle = colors[i % colors.length];
       ctx.arc(center, center, center, start, end);
       ctx.fill();
-
-      if (images[i]) {
-        const imgX = center + Math.cos(mid) * center * 0.6;
-        const imgY = center + Math.sin(mid) * center * 0.6;
-        ctx.save();
-        ctx.translate(imgX, imgY);
-        ctx.rotate(mid + Math.PI / 2);
-        ctx.drawImage(images[i], -25, -25, 50, 50);
-        ctx.restore();
-      }
 
       ctx.save();
       ctx.translate(center, center);
@@ -208,8 +210,11 @@ button {
 
   function spin() {
     const degreesPerSlice = 360 / names.length;
-    const joelIndex = names.findIndex(n => n.name === "Joel");
-    const centerOffset = (joelIndex + 0.5) * degreesPerSlice - 1.5;
+    let selectedIndex = Math.floor(Math.random() * names.length);
+    const joelIndex = names.findIndex(n => n.name.toLowerCase() === "joel");
+    if (joelIndex !== -1) selectedIndex = joelIndex;
+
+    const centerOffset = (selectedIndex + 0.5) * degreesPerSlice;
     const finalRotation = (5 * 360) + (360 - centerOffset);
 
     canvas.style.transition = "none";
@@ -220,11 +225,12 @@ button {
     }, 50);
 
     setTimeout(() => {
-      showPopup();
+      showPopup(names[selectedIndex].name);
     }, 5300);
   }
 
-  function showPopup() {
+  function showPopup(winner) {
+    document.getElementById("popupWinner").textContent = `😂 Si ${winner} ang Palaging Mali!`;
     document.getElementById("resultPopup").classList.add("show");
   }
 
@@ -232,6 +238,6 @@ button {
     document.getElementById("resultPopup").classList.remove("show");
   }
 
-  preloadImages(drawWheel);
+  updateWheel();
 </script></body>
 </html>
