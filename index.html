@@ -95,22 +95,26 @@
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
     const resultDiv = document.getElementById("result");
-
     const anglePerSlice = 2 * Math.PI / names.length;
     const images = [];
 
     function preloadImages(callback) {
       let loaded = 0;
-      for (let i = 0; i < names.length; i++) {
+      names.forEach((person, index) => {
         const img = new Image();
         img.crossOrigin = "anonymous";
-        img.src = names[i].img;
+        img.src = person.img;
         img.onload = () => {
-          images[i] = img;
+          images[index] = img;
           loaded++;
           if (loaded === names.length) callback();
         };
-      }
+        img.onerror = () => {
+          console.error("Image failed to load for:", person.name);
+          loaded++;
+          if (loaded === names.length) callback();
+        };
+      });
     }
 
     function drawWheel() {
@@ -127,15 +131,17 @@
         ctx.fill();
 
         const midAngle = startAngle + anglePerSlice / 2;
-        const x = 200 + Math.cos(midAngle) * 140;
-        const y = 200 + Math.sin(midAngle) * 140;
+        const imgX = 200 + Math.cos(midAngle) * 120;
+        const imgY = 200 + Math.sin(midAngle) * 120;
 
-        // Draw image
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(midAngle + Math.PI / 2);
-        ctx.drawImage(images[i], -25, -25, 50, 50);
-        ctx.restore();
+        // Draw image if available
+        if (images[i]) {
+          ctx.save();
+          ctx.translate(imgX, imgY);
+          ctx.rotate(midAngle + Math.PI / 2);
+          ctx.drawImage(images[i], -25, -25, 50, 50);
+          ctx.restore();
+        }
 
         // Draw name
         ctx.save();
@@ -143,8 +149,8 @@
         ctx.rotate(midAngle);
         ctx.textAlign = "center";
         ctx.fillStyle = "#000";
-        ctx.font = "14px Arial";
-        ctx.fillText(names[i].name, 120, 5);
+        ctx.font = "bold 14px Arial";
+        ctx.fillText(names[i].name, 110, 5);
         ctx.restore();
       }
     }
@@ -152,13 +158,13 @@
     function spin() {
       resultDiv.textContent = "";
 
-      // Always land on Joel
       const joelIndex = names.findIndex(n => n.name === "Joel");
       const sliceAngle = 360 / names.length;
       const targetAngle = 360 - (joelIndex * sliceAngle) - (sliceAngle / 2);
       const fullSpins = 5;
       const finalAngle = fullSpins * 360 + targetAngle;
 
+      canvas.style.transition = "transform 5s cubic-bezier(0.33, 1, 0.68, 1)";
       canvas.style.transform = `rotate(${finalAngle}deg)`;
 
       setTimeout(() => {
@@ -166,10 +172,7 @@
       }, 5200);
     }
 
-    preloadImages(() => {
-      drawWheel();
-    });
+    preloadImages(drawWheel);
   </script>
-
 </body>
 </html>
