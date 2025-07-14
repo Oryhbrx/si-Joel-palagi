@@ -5,40 +5,60 @@
   <title>SINO ANG PALAGING MALI SA TEAM BAHAY?</title>
   <style>
     body {
-      background: #222;
+      background: #111;
       color: #fff;
       font-family: Arial, sans-serif;
       text-align: center;
-      padding-top: 100px;
+      padding: 40px;
     }
 
     h1 {
-      font-size: 2.2em;
-      text-transform: uppercase;
-      margin-bottom: 30px;
       color: #ff4d4d;
+      text-transform: uppercase;
     }
 
-    #roulette {
-      font-size: 2em;
-      margin: 20px;
-      height: 60px;
+    #wheel-container {
+      position: relative;
+      margin: 50px auto;
+      width: 400px;
+      height: 400px;
+    }
+
+    #wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 10px solid #fff;
+      box-shadow: 0 0 20px #000;
+      transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    #pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid #f00;
     }
 
     #result {
-      font-size: 3em;
-      margin-top: 40px;
+      font-size: 2em;
+      margin-top: 30px;
       color: #00ff88;
     }
 
     button {
-      font-size: 1.5em;
+      font-size: 1.2em;
       padding: 10px 20px;
       background: #00f0ff;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      margin-top: 30px;
     }
 
     button:hover {
@@ -49,45 +69,106 @@
 <body>
 
   <h1>SINO ANG PALAGING MALI SA TEAM BAHAY?</h1>
-  <div id="roulette">Ready...</div>
+
+  <div id="wheel-container">
+    <div id="pointer"></div>
+    <canvas id="wheel" width="400" height="400"></canvas>
+  </div>
+
   <button onclick="spin()">SPIN</button>
   <div id="result"></div>
 
   <script>
     const names = [
-      "Alexandree",
-      "Jeilord",
-      "Jammir",
-      "Angelo",
-      "Ace",
-      "Roi",
-      "Alexis",
-      "Joel"
+      { name: "Alexandree", img: "https://drive.google.com/file/d/1Ivga5VKeegruVwu4ZFcIPtDn72L2ELco/view?usp=drive_link" },
+      { name: "Jeilord",     img: "https://drive.google.com/file/d/1IW3UnPq2fybg8dVQ9ybgx2IRqAsQQ5hv/view?usp=drive_link" },
+      { name: "Jammir",      img: "https://drive.google.com/file/d/102sH0_-bTbFXe2qOZ5Tlke2m7o3xzBsq/view?usp=drive_link" },
+      { name: "Angelo",      img: "https://drive.google.com/file/d/1lvO-irxBQBADZM7WqX_U2cXsHi3mcG4x/view?usp=drive_link" },
+      { name: "Ace",         img: "https://drive.google.com/file/d/1EvI_coOt5nYoCXPDuxoOd6fvqNER0qXc/view?usp=drive_link" },
+      { name: "Roi",         img: "https://drive.google.com/file/d/1LhckhWY3xFSrIS014F81Zgui2JBQvBBS/view?usp=drive_link" },
+      { name: "Alexis",      img: "https://drive.google.com/file/d/1_b1hkUfn51eJ3Jbr3XlOrt1XuE59j9z9/view?usp=drive_link" },
+      { name: "Joel",        img: "https://drive.google.com/file/d/1bXjjchmYYPCsbuyuRHogtAF8ZpY4Le6j/view?usp=drive_link" },
+      { name: "Jhundle",     img: "https://drive.google.com/file/d/1i7PbzcQB4xJLDIJS_Wv7dKT8VQF5sRvh/view?usp=drive_link" }
     ];
 
-    const rouletteDiv = document.getElementById("roulette");
+    const colors = ["#ff7675", "#74b9ff", "#ffeaa7", "#55efc4", "#a29bfe", "#fd79a8", "#81ecec", "#fab1a0", "#fdcb6e"];
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
     const resultDiv = document.getElementById("result");
+
+    const anglePerSlice = 2 * Math.PI / names.length;
+
+    const images = [];
+
+    function preloadImages(callback) {
+      let loaded = 0;
+      for (let i = 0; i < names.length; i++) {
+        const img = new Image();
+        img.src = names[i].img;
+        img.onload = () => {
+          images[i] = img;
+          loaded++;
+          if (loaded === names.length) callback();
+        };
+      }
+    }
+
+    function drawWheel() {
+      for (let i = 0; i < names.length; i++) {
+        const startAngle = i * anglePerSlice;
+        const endAngle = startAngle + anglePerSlice;
+
+        // Slice background
+        ctx.beginPath();
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.moveTo(200, 200);
+        ctx.arc(200, 200, 200, startAngle, endAngle);
+        ctx.fill();
+
+        // Image + Name
+        const midAngle = startAngle + anglePerSlice / 2;
+        const x = 200 + Math.cos(midAngle) * 140;
+        const y = 200 + Math.sin(midAngle) * 140;
+
+        // Draw image
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(midAngle + Math.PI / 2);
+        ctx.drawImage(images[i], -30, -30, 60, 60);
+        ctx.restore();
+
+        // Draw name
+        ctx.save();
+        ctx.translate(200, 200);
+        ctx.rotate(midAngle);
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#000";
+        ctx.font = "14px Arial";
+        ctx.fillText(names[i].name, 120, 5);
+        ctx.restore();
+      }
+    }
 
     function spin() {
       resultDiv.textContent = "";
-      let index = 0;
-      let spins = 30 + Math.floor(Math.random() * 20);
-      let interval = 100;
 
-      const spinInterval = setInterval(() => {
-        rouletteDiv.textContent = names[index % names.length];
-        index++;
-        spins--;
+      // Always land on Joel
+      const joelIndex = names.findIndex(n => n.name === "Joel");
+      const sliceAngle = 360 / names.length;
+      const targetAngle = 360 - (joelIndex * sliceAngle) - (sliceAngle / 2);
+      const fullSpins = 5;
+      const finalAngle = fullSpins * 360 + targetAngle;
 
-        if (spins <= 0) {
-          clearInterval(spinInterval);
-          setTimeout(() => {
-            rouletteDiv.textContent = "Joel";
-            resultDiv.textContent = "😆 Palaging si Joel ang mali!";
-          }, 500);
-        }
-      }, interval);
+      canvas.style.transform = `rotate(${finalAngle}deg)`;
+
+      setTimeout(() => {
+        resultDiv.textContent = "😆 Palaging si Joel ang mali!";
+      }, 5200);
     }
+
+    preloadImages(() => {
+      drawWheel();
+    });
   </script>
 
 </body>
