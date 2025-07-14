@@ -16,6 +16,7 @@
     h1 {
       color: #ff4d4d;
       margin-top: 1em;
+      font-size: 1.5em;
     }
 
     #wheel-container {
@@ -54,6 +55,7 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 20px;
     }
 
     #result {
@@ -155,15 +157,15 @@
   function spin() {
     resultEl.textContent = "";
 
-    const joelIndex = names.findIndex(n => n.name.toLowerCase() === "joel");
-    const sliceDeg = 360 / total;
-    const targetDeg = 360 - (joelIndex * sliceDeg + sliceDeg / 2);
+    const degreesPerSlice = 360 / names.length;
+    const joelIndex = names.findIndex(n => n.name === "Joel");
+    const centerOffset = (joelIndex + 0.5) * degreesPerSlice;
     const fullSpins = 5 * 360;
-    const finalRotation = fullSpins + targetDeg;
+    const finalRotation = fullSpins + (360 - centerOffset);
 
     canvas.style.transition = "none";
     canvas.style.transform = "rotate(0deg)";
-    
+
     setTimeout(() => {
       canvas.style.transition = "transform 5s ease-out";
       canvas.style.transform = `rotate(${finalRotation}deg)`;
@@ -176,5 +178,6 @@
 
   preloadImages(drawWheel);
 </script>
+
 </body>
 </html>
