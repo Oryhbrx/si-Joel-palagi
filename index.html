@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SINO ANG PALAGING MALI SA TEAM BAHAY?</title>
+  <style>
+    body {
+      background: #222;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      color: #ff4d4d;
+    }
+
+    #roulette {
+      font-size: 2em;
+      margin: 20px;
+      height: 60px;
+    }
+
+    #result {
+      font-size: 3em;
+      margin-top: 40px;
+      color: #00ff88;
+    }
+
+    button {
+      font-size: 1.5em;
+      padding: 10px 20px;
+      background: #00f0ff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #009eb2;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>SINO ANG PALAGING MALI SA TEAM BAHAY?</h1>
+  <div id="roulette">Ready...</div>
+  <button onclick="spin()">SPIN</button>
+  <div id="result"></div>
+
+  <script>
+    const names = [
+      "Alexandree",
+      "Jeilord",
+      "Jammir",
+      "Angelo",
+      "Ace",
+      "Roi",
+      "Alexis",
+      "Joel"
+    ];
+
+    const rouletteDiv = document.getElementById("roulette");
+    const resultDiv = document.getElementById("result");
+
+    function spin() {
+      resultDiv.textContent = "";
+      let index = 0;
+      let spins = 30 + Math.floor(Math.random() * 20);
+      let interval = 100;
+
+      const spinInterval = setInterval(() => {
+        rouletteDiv.textContent = names[index % names.length];
+        index++;
+        spins--;
+
+        if (spins <= 0) {
+          clearInterval(spinInterval);
+          setTimeout(() => {
+            rouletteDiv.textContent = "Joel";
+            resultDiv.textContent = "😆 Palaging si Joel ang mali!";
+          }, 500);
+        }
+      }, interval);
+    }
+  </script>
+
+</body>
+</html>
