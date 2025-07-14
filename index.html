@@ -155,29 +155,22 @@
   }
 
   function spin() {
-    resultEl.textContent = "";
+  const sliceAngle = 360 / names.length;
+  const joelIndex = names.findIndex(n => n.name === "Joel");
+  const targetAngle = 360 - ((joelIndex + 0.5) * sliceAngle); // Center of Joel's slice
+  const spins = 5;
+  const finalAngle = (spins * 360) + targetAngle;
 
-    const degreesPerSlice = 360 / names.length;
-    const joelIndex = names.findIndex(n => n.name === "Joel");
+  canvas.style.transition = "none";
+  canvas.style.transform = "rotate(0deg)";
+  setTimeout(() => {
+    canvas.style.transition = "transform 5s ease-out";
+    canvas.style.transform = `rotate(${finalAngle}deg)`;
+  }, 50);
 
-    // Small nudge: subtract a few degrees for precision alignment
-    const offsetNudge = 1.5; // adjust if needed
-
-    const centerOffset = (joelIndex + 0.5) * degreesPerSlice - offsetNudge;
-    const fullSpins = 5 * 360;
-    const finalRotation = fullSpins + (360 - centerOffset);
-
-    canvas.style.transition = "none";
-    canvas.style.transform = "rotate(0deg)";
-
-    setTimeout(() => {
-      canvas.style.transition = "transform 5s ease-out";
-      canvas.style.transform = `rotate(${finalRotation}deg)`;
-    }, 50);
-
-    setTimeout(() => {
-      resultEl.textContent = "😂 Palaging si Joel ang mali!";
-    }, 5300);
+  setTimeout(() => {
+    resultEl.textContent = "😂 Palaging si Joel ang mali!";
+  }, 5300);
   }
 
   preloadImages(drawWheel);
