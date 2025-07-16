@@ -126,6 +126,13 @@
       -webkit-text-fill-color: transparent;
       font-size: 2.5em;
       margin-bottom: 20px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); text-shadow: 0 0 10px gold; }
+      50% { transform: scale(1.05); text-shadow: 0 0 20px #fff; }
+      100% { transform: scale(1); text-shadow: 0 0 10px gold; }
     }
   </style>
 </head>
@@ -154,9 +161,7 @@ Jhundle</textarea>
 
 <div id="resultPopup">
   <div class="sparkles"></div>
-  <div class="popup-text" id="popupWinner">
-  Happy BIRTHDAY KORINA<br>Enjoy your day!!
-</div>
+  <div class="popup-text" id="popupWinner"></div>
   <button onclick="closePopup()">Spin Again</button>
 </div>
 
@@ -226,13 +231,9 @@ Jhundle</textarea>
     }, 50);
 
     setTimeout(() => {
-      showPopup("Joel");
+      document.getElementById("popupWinner").innerHTML = "Happy BIRTHDAY KORINA<br>Enjoy your day!!";
+      document.getElementById("resultPopup").classList.add("show");
     }, 5300);
-  }
-
-  function showPopup(name) {
-    document.getElementById("popupWinner").textContent = `Si ${name}!`;
-    document.getElementById("resultPopup").classList.add("show");
   }
 
   function closePopup() {
