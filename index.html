@@ -163,17 +163,17 @@ Jhundle</textarea>
   <div class="sparkles"></div>
   <div class="popup-text" id="popupWinner">🎉</div>
   <div>
-  <button onclick="toggleVoice()">🔊 Play/Pause</button>
-  <button onclick="replayVoice()">🔁 Replay</button>
-  <button onclick="nextSpin()">➡️ Next</button>
-  <button onclick="closePopup()">❌ Close</button>
-</div>
+    <button onclick="toggleVoice()">🔊 Play/Pause</button>
+    <button onclick="replayVoice()">🔁 Replay</button>
+    <button onclick="nextSpin()">➡️ Next</button>
+    <button onclick="closePopup()">❌ Close</button>
+  </div>
 </div>
 
-<!-- 🔊 Background Music (Optional) -->
-<audio id="birthdayAudio" src="korina-birthday.mp3" preload="auto"></audio>
+<!-- Background Music -->
+<audio id="birthdayAudio" src="korina-birthday.mp3" loop preload="auto"></audio>
 
-<!-- 🔊 Multiple Voice Messages -->
+<!-- Voice Player for Random Voice Messages -->
 <audio id="voicePlayer" preload="auto"></audio>
 
 <script>
@@ -192,9 +192,10 @@ Jhundle</textarea>
     "voice1.mp3",
     "voice2.mp3",
     "voice3.mp3"
+    // Add more as needed
   ];
 
-  // Save/load title
+  // Load saved title
   if (localStorage.getItem("wheelTitle")) {
     titleEl.innerText = localStorage.getItem("wheelTitle");
   }
@@ -253,10 +254,10 @@ Jhundle</textarea>
       document.getElementById("popupWinner").innerHTML = "🎉 Happy Birthday Korina! 🎂<br>Enjoy your day!!";
       popup.classList.add("show");
 
-      // Play music
+      // Play background music
       document.getElementById("birthdayAudio").play().catch(() => {});
 
-      // Play random voice
+      // Play random voice message
       const chosen = voiceFiles[Math.floor(Math.random() * voiceFiles.length)];
       voicePlayer.src = chosen;
       voicePlayer.play().catch(() => {});
@@ -276,6 +277,11 @@ Jhundle</textarea>
     popup.classList.remove("show");
     voicePlayer.pause();
     voicePlayer.currentTime = 0;
+  }
+
+  function nextSpin() {
+    closePopup();
+    spin();
   }
 
   updateWheel();
