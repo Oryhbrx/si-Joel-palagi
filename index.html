@@ -165,6 +165,9 @@ Jhundle</textarea>
   <button onclick="closePopup()">Spin Again</button>
 </div>
 
+<!-- 🥳 Birthday Audio -->
+<audio id="birthdayAudio" src="korina-birthday.mp3"></audio>
+
 <script>
   let names = [];
   const canvas = document.getElementById("wheel");
@@ -233,6 +236,12 @@ Jhundle</textarea>
     setTimeout(() => {
       document.getElementById("popupWinner").innerHTML = "Happy BIRTHDAY KORINA<br>Enjoy your day!!";
       document.getElementById("resultPopup").classList.add("show");
+
+      // 🔊 Play Audio
+      const audio = document.getElementById("birthdayAudio");
+      audio.play().catch(e => {
+        console.log("Autoplay blocked:", e);
+      });
     }, 5300);
   }
 
