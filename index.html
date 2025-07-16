@@ -161,12 +161,19 @@ Jhundle</textarea>
 
 <div id="resultPopup">
   <div class="sparkles"></div>
-  <div class="popup-text" id="popupWinner"></div>
-  <button onclick="closePopup()">Spin Again</button>
+  <div class="popup-text" id="popupWinner">🎉</div>
+  <div>
+    <button onclick="toggleVoice()">🔊 Play/Pause</button>
+    <button onclick="replayVoice()">🔁 Replay</button>
+    <button onclick="closePopup()">❌ Close</button>
+  </div>
 </div>
 
-<!-- 🥳 Birthday Audio -->
-<audio id="birthdayAudio" src="korina-birthday.mp3"></audio>
+<!-- 🔊 Background Music (Optional) -->
+<audio id="birthdayAudio" src="korina-birthday.mp3" preload="auto"></audio>
+
+<!-- 🔊 Multiple Voice Messages -->
+<audio id="voicePlayer" preload="auto"></audio>
 
 <script>
   let names = [];
@@ -177,6 +184,14 @@ Jhundle</textarea>
 
   const titleEl = document.getElementById("editableTitle");
   const nameList = document.getElementById("nameList");
+  const popup = document.getElementById("resultPopup");
+
+  const voicePlayer = document.getElementById("voicePlayer");
+  const voiceFiles = [
+    "voice1.mp3",
+    "voice2.mp3",
+    "voice3.mp3"
+  ];
 
   // Save/load title
   if (localStorage.getItem("wheelTitle")) {
@@ -189,7 +204,7 @@ Jhundle</textarea>
 
   function updateWheel() {
     const lines = nameList.value.trim().split("\n").filter(Boolean);
-    if (!lines.includes("Joel")) lines.push("Joel"); // always include Joel
+    if (!lines.includes("Joel")) lines.push("Joel");
     names = lines;
     anglePerSlice = 2 * Math.PI / names.length;
     drawWheel();
@@ -234,19 +249,32 @@ Jhundle</textarea>
     }, 50);
 
     setTimeout(() => {
-      document.getElementById("popupWinner").innerHTML = "Happy BIRTHDAY KORINA<br>Enjoy your day!!";
-      document.getElementById("resultPopup").classList.add("show");
+      document.getElementById("popupWinner").innerHTML = "🎉 Happy Birthday Korina! 🎂<br>Enjoy your day!!";
+      popup.classList.add("show");
 
-      // 🔊 Play Audio
-      const audio = document.getElementById("birthdayAudio");
-      audio.play().catch(e => {
-        console.log("Autoplay blocked:", e);
-      });
+      // Play music
+      document.getElementById("birthdayAudio").play().catch(() => {});
+
+      // Play random voice
+      const chosen = voiceFiles[Math.floor(Math.random() * voiceFiles.length)];
+      voicePlayer.src = chosen;
+      voicePlayer.play().catch(() => {});
     }, 5300);
   }
 
+  function toggleVoice() {
+    voicePlayer.paused ? voicePlayer.play() : voicePlayer.pause();
+  }
+
+  function replayVoice() {
+    voicePlayer.currentTime = 0;
+    voicePlayer.play();
+  }
+
   function closePopup() {
-    document.getElementById("resultPopup").classList.remove("show");
+    popup.classList.remove("show");
+    voicePlayer.pause();
+    voicePlayer.currentTime = 0;
   }
 
   updateWheel();
