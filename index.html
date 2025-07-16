@@ -165,9 +165,6 @@ Jhundle</textarea>
   <button onclick="closePopup()">Spin Again</button>
 </div>
 
-<!-- 🥳 Birthday Audio -->
-<audio id="birthdayAudio" src="korina-birthday.mp3"></audio>
-
 <script>
   let names = [];
   const canvas = document.getElementById("wheel");
@@ -223,6 +220,7 @@ Jhundle</textarea>
   function spin() {
     const degreesPerSlice = 360 / names.length;
     const joelIndex = names.findIndex(n => n.trim().toLowerCase() === "joel");
+    const winnerName = names[joelIndex]; // Later you can randomize this!
     const offset = (joelIndex + 0.5) * degreesPerSlice;
     const finalDeg = (5 * 360) + (360 - offset);
 
@@ -234,14 +232,11 @@ Jhundle</textarea>
     }, 50);
 
     setTimeout(() => {
-      document.getElementById("popupWinner").innerHTML = "Happy BIRTHDAY KORINA<br>Enjoy your day!!";
+      document.getElementById("popupWinner").innerHTML = `🎁 Si ${winnerName} ang napili!<br>Playing voice message...`;
       document.getElementById("resultPopup").classList.add("show");
 
-      // 🔊 Play Audio
-      const audio = document.getElementById("birthdayAudio");
-      audio.play().catch(e => {
-        console.log("Autoplay blocked:", e);
-      });
+      const audio = new Audio(`voices/${winnerName}.mp3`);
+      audio.play().catch(e => console.log("Autoplay blocked:", e));
     }, 5300);
   }
 
